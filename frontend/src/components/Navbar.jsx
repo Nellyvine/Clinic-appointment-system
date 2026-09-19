@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-// Change the clinic name here
+// This is the name of the clinic that will be displayed in the navbar
 const CLINIC_NAME = 'Meridian Clinic';
 
 function Navbar() {
