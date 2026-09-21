@@ -3,6 +3,7 @@ const cors = require("cors");
 const patientRoutes = require("./routes/patientRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
+const statsRoutes = require("./routes/statsRoutes");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use("/api/patients", patientRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/stats", statsRoutes);
 
 app.get("/", (req, res) => {
     res.send("Clinic Appointment API is running");

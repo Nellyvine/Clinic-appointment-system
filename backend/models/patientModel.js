@@ -27,6 +27,10 @@ const Patient = {
         );
     },
 
+    countPatients: (callback) => {
+    db.query("SELECT COUNT(*) AS total FROM patients", callback);
+    },
+
     deletePatient: (id, callback) => {
         db.query("DELETE FROM patients WHERE patient_id = ?", [id], callback);
     }

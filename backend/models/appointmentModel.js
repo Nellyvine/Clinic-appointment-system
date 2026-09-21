@@ -45,6 +45,10 @@ const Appointment = {
         );
     },
 
+    countAppointments: (callback) => {
+    db.query("SELECT COUNT(*) AS total FROM appointments", callback);
+    },
+
     deleteAppointment: (id, callback) => {
         db.query("DELETE FROM appointments WHERE appointment_id = ?", [id], callback);
     }
