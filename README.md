@@ -3,16 +3,17 @@
 A full-stack web application for managing patients, doctors, and appointments at a small medical clinic — built with React.js, Node.js/Express, and MySQL, documented with Swagger.
 
 ## Architecture
+```
 React.js (frontend) → HTTP/JSON → Node.js + Express (backend) → SQL → MySQL
-
+```
 The React app never talks to MySQL directly — all data flows through the Node.js API.
 
 ## Group D — Team
 
 | Area | Owner |
 |---|---|
-| Database, Node.js/Express API, Swagger docs | [Your Name] |
-| React frontend, routing, UI | [Teammate's Name] |
+| Database, Node.js/Express API, Swagger docs | Tako Nellyvine Mizero |
+| React frontend, routing, UI | Halimatu Sadia Sadia Mohammed |
 
 ## Tech Stack
 
@@ -42,9 +43,11 @@ The React app never talks to MySQL directly — all data flows through the Node.
 Start MySQL (e.g. via XAMPP Control Panel), then in phpMyAdmin's SQL tab, run the contents of `database.sql` from the project root. This creates `clinic_db`, all 3 tables, and 5+ sample rows in each.
 
 ### 2. Run the backend
+```
 cd frontend
 npm install
 npm run dev
+```
 - App: `http://localhost:5173`
 
 ## API Endpoints (16 total)
@@ -60,6 +63,7 @@ Full documentation, request/response schemas, and a "Try it out" tester for ever
 
 ## Example: Create an appointment
 **Request**
+```
 POST /api/appointments
 Content-Type: application/json
 
@@ -70,6 +74,7 @@ Content-Type: application/json
 "appointment_time": "13:00:00",
 "status": "scheduled"
 }
+```
 **Response** — `201 Created`
 ```json
 { "id": 6 }
@@ -86,6 +91,7 @@ Content-Type: application/json
 | 500 | Server/database error |
 
 ## Project Structure
+```
 clinic-appointment-system/
 ├── database.sql # Schema + sample data
 ├── backend/
@@ -100,7 +106,7 @@ clinic-appointment-system/
 ├── pages/ # Dashboard, Patients, Doctors, Appointments
 ├── components/ # Navbar, shared UI
 └── services/api.js # API calls (axios)
-
+```
 ## Testing
 
 All backend endpoints were tested via both **Postman** and the **Swagger UI** (`/api-docs`), including success and error cases (missing fields, non-existent IDs, invalid foreign keys).
