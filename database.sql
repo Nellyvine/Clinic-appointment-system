@@ -1,6 +1,5 @@
-DROP TABLE IF EXISTS appointments;
-DROP TABLE IF EXISTS patients;
-DROP TABLE IF EXISTS doctors;
+CREATE DATABASE IF NOT EXISTS clinic_db;
+USE clinic_db;
 
 CREATE TABLE patients (
     patient_id INT AUTO_INCREMENT PRIMARY KEY,
