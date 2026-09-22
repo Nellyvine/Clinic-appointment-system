@@ -1,16 +1,24 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import Patients from './pages/Patients.jsx';
+import Doctors from './pages/Doctors.jsx';
+import Appointments from './pages/Appointments.jsx';
+import AppointmentDetails from './pages/AppointmentDetails.jsx';
 
 function App() { 
     return (
         <div>
             <Navbar />
-            <Routes>
-                <Route path="/" element={<h1>Dashboard</h1>} />
-                <Route path="/patients" element={<h1>Patients</h1>} />
-                <Route path="/doctors" element={<h1>Doctors</h1>} />
-                <Route path="/appointments" element={<h1>Appointments</h1>} />
-            </Routes>
+            <div className="container">
+                <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/patients" element={<Patients />} />
+                    <Route path="/doctors" element={<Doctors />} />
+                    <Route path="/appointments" element={<Appointments />} />
+                    <Route path="/appointments/:id" element={<AppointmentDetails />} />
+                </Routes>
+            </div>
         </div>
     ); 
 } 
