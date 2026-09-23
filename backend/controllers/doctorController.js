@@ -1,65 +1,68 @@
-const doctorModel = require('../models/doctorModel');
+const Doctor = require("../models/doctorModel");
 
-const getDoctors = async (req, res) => {
-  try {
-    const doctors = await doctorModel.getAllDoctors();
-    res.status(200).json(doctors);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving doctors', error: err.message });
-  }
+const doctorController = {
+    getAllDoctors: (req, res) => {
+        Doctor.getAllDoctors((error, results) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            res.status(200).json(results);
+        });
+    },
+
+    getDoctorById: (req, res) => {
+        Doctor.getDoctorById(req.params.id, (error, results) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            if (results.length === 0) {
+                return res.status(404).json({ error: "There is no doctor at that id" });
+            }
+            res.status(200).json(results[0]);
+        });
+    },
+
+    createDoctor: (req, res) => {
+        const { name, specialisation, phone, email } = req.body;
+        if (!name) {
+            return res.status(400).json({ error: "Name is required" });
+        }
+
+        Doctor.createDoctor({ name, specialisation, phone, email }, (error, result) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            res.status(201).json({ id: result.insertId });
+        });
+    },
+
+    updateDoctor: (req, res) => {
+        const id = req.params.id;
+
+        Doctor.getDoctorById(id, (error, results) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            if (results.length === 0) {
+                return res.status(404).json({ error: "There is no doctor at that id" });
+            }
+
+            const current = results[0];
+            const updated = {
+                name: req.body.name !== undefined ? req.body.name : current.name,
+                specialisation: req.body.specialisation !== undefined ? req.body.specialisation : current.specialisation,
+                phone: req.body.phone !== undefined ? req.body.phone : current.phone,
+                email: req.body.email !== undefined ? req.body.email : current.email
+            };
+
+            Doctor.updateDoctor(id, updated, (error) => {
+                if (error) return res.status(500).json({ error: "Database error" });
+                res.status(200).json({ message: "Doctor successfully updated" });
+            });
+        });
+    },
+
+    deleteDoctor: (req, res) => {
+        Doctor.deleteDoctor(req.params.id, (error, result) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: "There is no doctor at that id" });
+            }
+            res.status(200).json({ message: "Doctor successfully deleted" });
+        });
+    }
 };
 
-const getDoctor = async (req, res) => {
-  try {
-    const doctor = await doctorModel.getDoctorById(req.params.id);
-    if (!doctor) {
-      return res.status(404).json({ message: 'Doctor not found' });
-    }
-    res.status(200).json(doctor);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving doctor', error: err.message });
-  }
-};
-
-const addDoctor = async (req, res) => {
-  try {
-    const { name, specialisation, phone, email } = req.body;
-    if (!name || !specialisation) {
-      return res.status(400).json({ message: 'Name and specialisation are required' });
-    }
-    const newDoctor = await doctorModel.createDoctor({ name, specialisation, phone, email });
-    res.status(201).json({ message: 'Doctor successfully added', doctor: newDoctor });
-  } catch (err) {
-    res.status(500).json({ message: 'Error creating doctor', error: err.message });
-  }
-};
-
-const editDoctor = async (req, res) => {
-  try {
-    const { name, specialisation, phone, email } = req.body;
-    if (!name || !specialisation) {
-      return res.status(400).json({ message: 'Name and specialisation are required' });
-    }
-    const affectedRows = await doctorModel.updateDoctor(req.params.id, { name, specialisation, phone, email });
-    if (affectedRows === 0) {
-      return res.status(404).json({ message: 'Doctor not found' });
-    }
-    res.status(200).json({ message: 'Doctor successfully updated' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error updating doctor', error: err.message });
-  }
-};
-
-const removeDoctor = async (req, res) => {
-  try {
-    const affectedRows = await doctorModel.deleteDoctor(req.params.id);
-    if (affectedRows === 0) {
-      return res.status(404).json({ message: 'Doctor not found' });
-    }
-    res.status(200).json({ message: 'Doctor successfully deleted' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error deleting doctor', error: err.message });
-  }
-};
-
-module.exports = { getDoctors, getDoctor, addDoctor, editDoctor, removeDoctor };
+module.exports = doctorController;

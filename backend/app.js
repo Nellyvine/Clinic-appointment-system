@@ -5,6 +5,9 @@ const doctorRoutes = require("./routes/doctorRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const statsRoutes = require("./routes/statsRoutes");
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger/swagger");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 

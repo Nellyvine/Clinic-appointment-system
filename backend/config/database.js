@@ -1,16 +1,18 @@
-const mysql = require('mysql2');
+const mysql = require("mysql2");
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'clinic_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "clinic_db"
 });
 
-// Uses the promise-based API so controllers can use async/await
-const db = pool.promise();
+connection.connect((error) => {
+    if (error) {
+        console.log("Database connection failed:", error);
+        return;
+    }
+    console.log("Connected to MySQL database.");
+});
 
-module.exports = db;
+module.exports = connection;

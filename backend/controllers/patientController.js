@@ -1,65 +1,68 @@
-const patientModel = require('../models/patientModel');
+const Patient = require("../models/patientModel");
 
-const getPatients = async (req, res) => {
-  try {
-    const patients = await patientModel.getAllPatients();
-    res.status(200).json(patients);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving patients', error: err.message });
-  }
+const patientController = {
+    getAllPatients: (req, res) => {
+        Patient.getAllPatients((error, results) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+           res.status(200).json(results);
+        });
+    },
+
+    getPatientById: (req, res) => {
+        Patient.getPatientById(req.params.id, (error, results) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            if (results.length === 0) {
+                return res.status(404).json({ error: "There is no patient at that id" });
+            }
+            res.status(200).json(results[0]);
+        });
+    },
+
+    createPatient: (req, res) => {
+        const { name, date_of_birth, phone, email } = req.body;
+        if (!name || !date_of_birth) {
+            return res.status(400).json({ error: "Name and date_of_birth are required" });
+        }
+
+        Patient.createPatient({ name, date_of_birth, phone, email }, (error, result) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            res.status(201).json({ id: result.insertId });
+        });
+    },
+
+    updatePatient: (req, res) => {
+        const id = req.params.id;
+
+        Patient.getPatientById(id, (error, results) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            if (results.length === 0) {
+                return res.status(404).json({ error: "There is no patient at that id" });
+            }
+
+            const current = results[0];
+            const updated = {
+                name: req.body.name !== undefined ? req.body.name : current.name,
+                date_of_birth: req.body.date_of_birth !== undefined ? req.body.date_of_birth : current.date_of_birth,
+                phone: req.body.phone !== undefined ? req.body.phone : current.phone,
+                email: req.body.email !== undefined ? req.body.email : current.email
+            };
+
+            Patient.updatePatient(id, updated, (error) => {
+                if (error) return res.status(500).json({ error: "Database error" });
+                res.status(200).json({ message: "Patient successfully updated" });
+            });
+        });
+    },
+
+    deletePatient: (req, res) => {
+        Patient.deletePatient(req.params.id, (error, result) => {
+            if (error) return res.status(500).json({ error: "Database error" });
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: "There is no patient at that id" });
+            }
+            res.status(200).json({ message: "Patient successfully deleted" });
+        });
+    }
 };
 
-const getPatient = async (req, res) => {
-  try {
-    const patient = await patientModel.getPatientById(req.params.id);
-    if (!patient) {
-      return res.status(404).json({ message: 'Patient not found' });
-    }
-    res.status(200).json(patient);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving patient', error: err.message });
-  }
-};
-
-const addPatient = async (req, res) => {
-  try {
-    const { name, date_of_birth, phone, email } = req.body;
-    if (!name || !date_of_birth) {
-      return res.status(400).json({ message: 'Name and date of birth are required' });
-    }
-    const newPatient = await patientModel.createPatient({ name, date_of_birth, phone, email });
-    res.status(201).json({ message: 'Patient successfully added', patient: newPatient });
-  } catch (err) {
-    res.status(500).json({ message: 'Error creating patient', error: err.message });
-  }
-};
-
-const editPatient = async (req, res) => {
-  try {
-    const { name, date_of_birth, phone, email } = req.body;
-    if (!name || !date_of_birth) {
-      return res.status(400).json({ message: 'Name and date of birth are required' });
-    }
-    const affectedRows = await patientModel.updatePatient(req.params.id, { name, date_of_birth, phone, email });
-    if (affectedRows === 0) {
-      return res.status(404).json({ message: 'Patient not found' });
-    }
-    res.status(200).json({ message: 'Patient successfully updated' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error updating patient', error: err.message });
-  }
-};
-
-const removePatient = async (req, res) => {
-  try {
-    const affectedRows = await patientModel.deletePatient(req.params.id);
-    if (affectedRows === 0) {
-      return res.status(404).json({ message: 'Patient not found' });
-    }
-    res.status(200).json({ message: 'Patient successfully deleted' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error deleting patient', error: err.message });
-  }
-};
-
-module.exports = { getPatients, getPatient, addPatient, editPatient, removePatient };
+module.exports = patientController;
