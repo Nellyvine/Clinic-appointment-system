@@ -6,7 +6,7 @@ Group D - Clinic Appointment Management System
 - Nellyvine Tako Mizero: Backend (Node.js, Express, MySQL, Swagger)
 
 ## Demo Video
-[Watch the demo](ADD_YOUR_VIDEO_LINK_HERE)
+[Watch the demo](https://drive.google.com/drive/folders/16QDxFqTvW5FimHrh_m0WZIJlsHHxIXsU?usp=sharing)
 
 ## Overview
 A web application for a small medical clinic to manage patients, doctors, and appointments. Reception staff can register patients, view available doctors, and schedule, edit, or cancel appointments, all backed by a MySQL database rather than paper records.
